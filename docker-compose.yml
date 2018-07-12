@@ -1,0 +1,28 @@
+version: '2.4'
+
+networks:
+  default:
+    external:
+      name: proxy-tier
+  db-net:
+    external:
+      name: backend-tier
+
+services:
+
+  phpmyadmin:
+    image: pam79/pma
+    container_name: phpmyadmin
+    volumes:
+      - /sessions
+      - ./config.user.inc.php:/etc/phpmyadmin/config.user.inc.php
+    environment:
+      - "PMA_ABSOLUTE_URI=https://pma.example.com/"
+      - "VIRTUAL_HOST=pma.example.com"
+      - "VIRTUAL_PORT=9000"
+    ports:
+        - 80:80
+    networks:
+      - default
+      - db-net
+    restart: always
